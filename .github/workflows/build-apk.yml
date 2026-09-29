@@ -24,40 +24,24 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Find Gradle project
-        run: |
-          GRADLEW=$(find buildsrc -name gradlew -type f | head -1)
-
-          if [ -z "$GRADLEW" ]; then
-            echo "ERROR: gradlew not found!"
-            find buildsrc -maxdepth 5 -type f
-            exit 1
-          fi
-
-          PROJECT_DIR=$(dirname "$GRADLEW")
-
-          echo "Gradle wrapper found:"
-          echo "$GRADLEW"
-
-          echo "Project directory:"
-          echo "$PROJECT_DIR"
-
-          echo "PROJECT_DIR=$PROJECT_DIR" >> "$GITHUB_ENV"
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
 
       - name: Build APK
+        working-directory: buildsrc
         run: |
-          cd "$PROJECT_DIR"
-          chmod +x gradlew
-          ./gradlew assembleDebug
+          gradle assembleDebug
 
       - name: Find APK
         run: |
           echo "Searching for APK..."
-          find "$PROJECT_DIR" -type f -name "*.apk"
+          find buildsrc -type f -name "*.apk"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Feuille-Reponses-APK-v3
-          path: '**/app/build/outputs/apk/debug/app-debug.apk'
+          path: 'buildsrc/app/build/outputs/apk/debug/app-debug.apk'
           if-no-files-found: error
