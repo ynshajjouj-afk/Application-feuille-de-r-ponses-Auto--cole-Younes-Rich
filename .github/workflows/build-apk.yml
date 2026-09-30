@@ -13,11 +13,11 @@ jobs:
 
       - name: Extract v11 project
         run: |
-          mkdir buildsrc
+          mkdir -p buildsrc
           unzip -q Feuille-Reponses-APK-GitHub-v11.zip -d buildsrc
 
           echo "Files extracted:"
-          find buildsrc/Feuille-Reponses-APK-GitHub-v11 -maxdepth 3 -type f | head -100
+          find buildsrc -maxdepth 4 -type f | head -100
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -38,11 +38,11 @@ jobs:
       - name: Find APK
         run: |
           echo "Searching for APK..."
-          find buildsrc/Feuille-Reponses-APK-GitHub-v11 -type f -name "*.apk"
+          find buildsrc -type f -name "*.apk"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Feuille-Reponses-APK-v11
-          path: 'buildsrc/Feuille-Reponses-APK-GitHub-v11/app/build/outputs/apk/debug/app-debug.apk'
+          path: buildsrc/Feuille-Reponses-APK-GitHub-v11/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
