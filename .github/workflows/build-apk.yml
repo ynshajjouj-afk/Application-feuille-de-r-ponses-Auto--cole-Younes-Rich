@@ -11,13 +11,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Extract v11 project
+      - name: Extract v13 project
         run: |
-          mkdir -p buildsrc
-          unzip -q Feuille-Reponses-APK-GitHub-v11.zip -d buildsrc
-
+          mkdir buildsrc
+          unzip -q Feuille-Reponses-APK-GitHub-v13.zip -d buildsrc
           echo "Files extracted:"
-          find buildsrc -maxdepth 4 -type f | head -100
+          find buildsrc/Feuille-Reponses-APK-GitHub-v13 -maxdepth 3 -type f | head -100
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -31,18 +30,18 @@ jobs:
           gradle-version: '8.7'
 
       - name: Build APK
-        working-directory: buildsrc/Feuille-Reponses-APK-GitHub-v11
+        working-directory: buildsrc/Feuille-Reponses-APK-GitHub-v13
         run: |
           gradle assembleDebug --no-daemon
 
       - name: Find APK
         run: |
           echo "Searching for APK..."
-          find buildsrc -type f -name "*.apk"
+          find buildsrc/Feuille-Reponses-APK-GitHub-v13 -type f -name "*.apk"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Feuille-Reponses-APK-v11
-          path: buildsrc/Feuille-Reponses-APK-GitHub-v11/app/build/outputs/apk/debug/app-debug.apk
+          name: Feuille-Reponses-APK-v13
+          path: buildsrc/Feuille-Reponses-APK-GitHub-v13/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
